@@ -6,23 +6,35 @@ def get_bnb_price():
     url = "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
     response = requests.get(url)
     data = response.json()
-    return float(data["binancecoin"]["usd"])  # مسیر درست برای دریافت قیمت
 
-# به‌روزرسانی فایل JSON در GitHub
+    # چاپ داده دریافتی برای اشکال‌زدایی
+    print("API Response:", data)
+
+    # بررسی اینکه آیا کلیدهای مورد نیاز در پاسخ هستند یا نه
+    if "binancecoin" in data and "usd" in data["binancecoin"]:
+        return float(data["binancecoin"]["usd"])
+    else:
+        raise ValueError("Invalid response from API")
+
+# به‌روزرسانی فایل JSON
 def update_price_file():
-    price = get_bnb_price()
-    
-    new_data = {
-        "symbol": "BNB",
-        "price": str(price),
-        "currency": "USD",
-        "last_updated": "2025-03-13T12:00:00Z"
-    }
+    try:
+        price = get_bnb_price()
 
-    with open("price.json", "w") as json_file:
-        json.dump(new_data, json_file, indent=4)
+        new_data = {
+            "symbol": "BNB",
+            "price": str(price),
+            "currency": "USD",
+            "last_updated": "2025-03-13T12:00:00Z"
+        }
 
-    print(f"Price updated: {price} USD")
+        with open("price.json", "w") as json_file:
+            json.dump(new_data, json_file, indent=4)
+
+        print(f"Price updated: {price} USD")
+
+    except Exception as e:
+        print("Error:", e)
 
 # اجرای تابع
 update_price_file()
