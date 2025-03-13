@@ -2,32 +2,31 @@ name: Update BNB Price
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # اجرا هر 5 دقیقه یک بار
-  workflow_dispatch:
+    - cron: '*/5 * * * *'  # هر 5 دقیقه یک‌بار اجرا شود
+  workflow_dispatch:  # امکان اجرای دستی
 
 jobs:
   update-price:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies
-      run: pip install requests
+      - name: Install dependencies
+        run: pip install requests
 
-    - name: Run price update script
-      run: python update_price.py
+      - name: Run update script
+        run: python update_price.py
 
-    - name: Commit and push if changed
-      run: |
-        git config --global user.name "github-actions"
-        git config --global user.email "actions@github.com"
-        git add price.json
-        git commit -m "Auto update BNB price" || exit 0
-        git push
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add price.json
+          git commit -m "Auto update BNB price" || exit 0
+          git push
